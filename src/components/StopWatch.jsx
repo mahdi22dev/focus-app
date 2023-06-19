@@ -3,26 +3,25 @@ import styled from "styled-components";
 import { setInterval, clearInterval } from "worker-timers";
 const StopWatch = () => {
   const previousTime = localStorage.getItem("stopwatchTime");
-  const [time, setTime] = useState(parseInt(previousTime, 10) || "0");
+  const [time, setTime] = useState(parseInt(previousTime, 10) || 0);
   const [isWatchingTime, seIsWatchingTime] = useState(false);
   useEffect(() => {
     let intervalId;
-    localStorage.setItem("stopwatchTime", time.toString());
     if (isWatchingTime) {
       intervalId = setInterval(() => setTime(time + 1), 7);
     }
     return () => clearInterval(intervalId);
   }, [isWatchingTime, time]);
 
-  // useEffect(() => {
-  //   localStorage.setItem("stopwatchTime", "0");
-  // }, []);
   useEffect(() => {
-    const previousTime = localStorage.getItem("stopwatchTime");
-    if (!previousTime) {
-      setTime("0");
-    }
-  });
+    localStorage.setItem("stopwatchTime", time.toString());
+  }, [time]);
+  // useEffect(() => {
+  //   const previousTime = localStorage.getItem("stopwatchTime");
+  //   if (!previousTime) {
+  //     setTime(0);
+  //   }
+  // }, []);
 
   // Hours calculation
   const hours = Math.floor(time / 360000);
