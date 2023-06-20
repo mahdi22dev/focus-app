@@ -7,14 +7,16 @@ import {
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { setInterval, clearInterval } from "worker-timers";
+import { pomodoroData } from "../Data";
+import { motion } from "framer-motion";
 
 const Counter = () => {
-  const [time, setTime] = useState(1500);
+  const [time, setTime] = useState(pomodoroData[0].time);
   const [isWatchingTime, setIsWatchingTime] = useState(false);
-  const initVal = useRef(time);
+  const [btnId, setBtnId] = useState(pomodoroData[0]);
+  const initVal = useRef(pomodoroData[0].time);
 
   useEffect(() => {
-    console.log(initVal.current);
     let intervalId;
     if (time === 0) {
       setIsWatchingTime(false);
@@ -25,19 +27,8 @@ const Counter = () => {
       intervalId = setInterval(() => setTime((prevTime) => prevTime - 1), 1000);
     }
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        isWatchingTime(true);
-      } else {
-        isWatchingTime(true);
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
     return () => {
       clearInterval(intervalId);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [isWatchingTime, time]);
   const minutes = Math.floor(time / 60);
@@ -48,35 +39,69 @@ const Counter = () => {
   };
 
   const reset = () => {
-    setTime(1500);
+    setTime(btnId.time);
     setIsWatchingTime(false);
   };
 
   return (
     <Pomodoro className='pomodoro'>
-      <div className='circle'>
-        <CircularProgressbarWithChildren
-          styles={buildStyles({
-            pathTransitionDuration: 0.5,
-            trailColor: "var( --color-primary-400)",
-            pathColor: `var(--color-primary-100)`,
-            textColor: "var(--color-primary-100)",
+      <div className='right'>
+        <div className='time-changer-buttons'>
+          {pomodoroData.map((btn, index) => {
+            return (
+              <button
+                key={btn.id}
+                className={btnId === btn ? "btn btn-selected" : "btn"}
+                onClick={() => {
+                  setBtnId(pomodoroData[index]);
+                  console.log(btnId);
+                  if (btn.name == "Pomodoro") {
+                    setTime(pomodoroData[0].time);
+                    initVal.current = pomodoroData[0].time;
+                    setIsWatchingTime(false);
+                  }
+                  if (btn.name == "Break") {
+                    setTime(pomodoroData[1].time);
+                    initVal.current = pomodoroData[1].time;
+                    setIsWatchingTime(false);
+                  }
+                }}
+              >
+                {btn.name}
+                {btnId == btn ? (
+                  <motion.div
+                    className='underline-btn'
+                    layoutId='underline-btn'
+                  ></motion.div>
+                ) : null}
+              </button>
+            );
           })}
-          strokeWidth={5}
-          value={minutes}
-          minValue={0}
-          maxValue={Math.floor(initVal.current / 60)}
-          text={`${minutes.toString().padStart(2, "0")}:${seconds
-            .toString()
-            .padStart(2, "0")}`}
-        >
-          <button
-            className='pomodoro-button stop-btn btn'
-            onClick={startAndStop}
+        </div>
+        <div className='circle'>
+          <CircularProgressbarWithChildren
+            styles={buildStyles({
+              pathTransitionDuration: 0.5,
+              trailColor: "var( --color-primary-400)",
+              pathColor: `var(--color-primary-100)`,
+              textColor: "var(--color-primary-100)",
+            })}
+            strokeWidth={5}
+            value={minutes}
+            minValue={0}
+            maxValue={Math.floor(initVal.current / 60)}
+            text={`${minutes.toString().padStart(2, "0")}:${seconds
+              .toString()
+              .padStart(2, "0")}`}
           >
-            {isWatchingTime ? <BiStop /> : <BiPlayCircle />}
-          </button>
-        </CircularProgressbarWithChildren>
+            <button
+              className='pomodoro-button stop-btn btn'
+              onClick={startAndStop}
+            >
+              {isWatchingTime ? <BiStop /> : <BiPlayCircle />}
+            </button>
+          </CircularProgressbarWithChildren>
+        </div>
       </div>
       <button className='reset-btn btn' onClick={reset}>
         <BiReset />
@@ -93,9 +118,24 @@ const Pomodoro = styled.section`
   align-items: center;
   flex-direction: column;
   overflow: hidden;
-  /* .pomodoro-buttons {
-    margin-top: 50px;
-  } */
+  .right {
+    .time-changer-buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin: auto auto;
+      margin-bottom: 50px;
+      max-width: 300px;
+      justify-content: space-between;
+      button {
+        font-size: large;
+        position: relative;
+        min-width: 100px;
+        text-align: center;
+      }
+    }
+  }
   .circle {
     position: relative;
     width: 400px;
@@ -106,12 +146,11 @@ const Pomodoro = styled.section`
     transition-property: color background-color box-shadow;
     transition: 0.2s linear;
     font-weight: 700;
+    box-shadow: 5px 2px 46px 4px rgba(255, 161, 56, 0.4);
   }
 
   .circle:hover {
-    box-shadow: 5px 2px 46px 4px rgba(255, 161, 56, 0.4);
     color: var(--color-primary-200);
-    /* background-color: var(--color-primary-600); */
   }
   .stop-btn {
     margin-top: auto;

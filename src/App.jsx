@@ -57,7 +57,8 @@ const Wrraper = styled.main`
     color: var(--color-primary-500);
     font-weight: 700;
     font-size: clamp(40px, 6vw, 60px);
-    margin-bottom: 90px;
+    margin-top: 10px;
+    margin-bottom: 60px;
   }
   ul {
     display: flex;
@@ -68,6 +69,7 @@ const Wrraper = styled.main`
     border-radius: 2px;
     background-color: var(--color-primary-900);
     z-index: -1;
+    margin: 10px auto;
     color: var(--color-primary-700);
   }
   li {

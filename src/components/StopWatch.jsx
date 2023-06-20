@@ -16,12 +16,6 @@ const StopWatch = () => {
   useEffect(() => {
     localStorage.setItem("stopwatchTime", time.toString());
   }, [time]);
-  // useEffect(() => {
-  //   const previousTime = localStorage.getItem("stopwatchTime");
-  //   if (!previousTime) {
-  //     setTime(0);
-  //   }
-  // }, []);
 
   // Hours calculation
   const hours = Math.floor(time / 360000);
