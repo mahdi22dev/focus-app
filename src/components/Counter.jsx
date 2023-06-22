@@ -38,7 +38,7 @@ const Counter = () => {
     }
 
     if (isWatchingTime && time > 0) {
-      intervalId = setInterval(() => setTime((prevTime) => prevTime - 1), 10);
+      intervalId = setInterval(() => setTime((prevTime) => prevTime - 1), 1000);
     }
 
     return () => {
