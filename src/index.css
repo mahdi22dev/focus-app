@@ -116,22 +116,45 @@ li.selected {
   background-color: var(--color-primary-500) !important;
   border-radius: 3px;
 }
-/* .underline-btn {
+.backdrop {
+  padding: 30px;
   position: absolute;
   width: 100%;
   height: 100%;
   left: 0;
   bottom: 0;
+  z-index: 11111;
+  background-color: rgb(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.modal {
+  width: min(600px, 80%);
+  height: 450px;
+  color: var(--color-primary-100);
+  background-color: #fffffe;
+  border-radius: 10px;
+  padding: 40px;
+  padding-top: 10px;
+  position: relative;
+}
+.model-title {
+  text-align: left;
+  margin-top: 20px;
+  font-weight: 700;
+}
+.modal-time {
+  text-transform: capitalize;
+}
+
+.close-btn {
+  position: absolute;
+  top: 0;
   right: 0;
-  color: #fff !important;
-  background: red !important;
-  border-radius: 2px;
-  z-index: 1;
-} */
-/*
- * react-circular-progressbar styles
- * All of the styles in this file are configurable!
- */
+  font-size: clamp(20px, 2.5vw, 30px) !important;
+}
 
 .CircularProgressbar {
   /*

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { BiPlayCircle, BiStop, BiReset } from "react-icons/bi";
+import { AiTwotoneSetting } from "react-icons/ai";
 import {
   CircularProgressbarWithChildren,
   buildStyles,
@@ -8,23 +9,36 @@ import {
 import "react-circular-progressbar/dist/styles.css";
 import { setInterval, clearInterval } from "worker-timers";
 import { pomodoroData } from "../Data";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import Settings from "./Settings";
+import { useGlobalContext } from "../context/context";
 
 const Counter = () => {
-  const [time, setTime] = useState(pomodoroData[0].time);
+  const {
+    openSettings,
+    setOpenSettings,
+    time,
+    setTime,
+    breakValue,
+    setBreakValue,
+    trigger,
+  } = useGlobalContext();
+  // const [time, setTime] = useState(pomodoroData[0].time);
   const [isWatchingTime, setIsWatchingTime] = useState(false);
   const [btnId, setBtnId] = useState(pomodoroData[0]);
-  const initVal = useRef(pomodoroData[0].time);
-
+  const initVal = useRef(time * 60);
+  useEffect(() => {
+    setTime(time * 60);
+    initVal.current = time * 60;
+  }, [trigger]);
   useEffect(() => {
     let intervalId;
     if (time === 0) {
       setIsWatchingTime(false);
-      setTime(1500);
     }
 
     if (isWatchingTime && time > 0) {
-      intervalId = setInterval(() => setTime((prevTime) => prevTime - 1), 1000);
+      intervalId = setInterval(() => setTime((prevTime) => prevTime - 1), 10);
     }
 
     return () => {
@@ -54,15 +68,14 @@ const Counter = () => {
                 className={btnId === btn ? "btn btn-selected" : "btn"}
                 onClick={() => {
                   setBtnId(pomodoroData[index]);
-                  console.log(btnId);
                   if (btn.name == "Pomodoro") {
-                    setTime(pomodoroData[0].time);
-                    initVal.current = pomodoroData[0].time;
+                    setTime(25 * 60);
+                    initVal.current = 25 * 60;
                     setIsWatchingTime(false);
                   }
                   if (btn.name == "Break") {
-                    setTime(pomodoroData[1].time);
-                    initVal.current = pomodoroData[1].time;
+                    setTime(breakValue * 60);
+                    initVal.current = breakValue * 60;
                     setIsWatchingTime(false);
                   }
                 }}
@@ -103,9 +116,22 @@ const Counter = () => {
           </CircularProgressbarWithChildren>
         </div>
       </div>
-      <button className='reset-btn btn' onClick={reset}>
-        <BiReset />
+      <button
+        className='pomodoro-button stg-btn btn'
+        onClick={() => {
+          setOpenSettings(!openSettings);
+        }}
+      >
+        <AiTwotoneSetting />
       </button>
+      <AnimatePresence initial={false} mode='wait'>
+        {openSettings && <Settings />}
+      </AnimatePresence>
+
+      {/* reset btn  */}
+      {/* <button className='reset-btn btn' onClick={reset}>
+        <BiReset />
+      </button> */}
     </Pomodoro>
   );
 };
@@ -118,6 +144,7 @@ const Pomodoro = styled.section`
   align-items: center;
   flex-direction: column;
   overflow: hidden;
+
   .right {
     .time-changer-buttons {
       display: flex;
@@ -165,6 +192,10 @@ const Pomodoro = styled.section`
   }
   button:hover {
     color: var(--color-primary-700);
+  }
+  .stg-btn {
+    margin-top: 30px;
+    font-size: clamp(30px, 5vw, 40px) !important;
   }
   /* .reset-btn {
     margin-top: 30px;
