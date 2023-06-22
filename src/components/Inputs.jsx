@@ -9,7 +9,7 @@ const Inputs = () => {
   return (
     <InputsWrapper className='inputs'>
       <label htmlFor=''>
-        pomodoro{" "}
+        pomodoro
         <input
           type='number'
           className='input'
@@ -18,11 +18,11 @@ const Inputs = () => {
             setTempValue1(e.target.value);
             console.log(tempValue1);
           }}
-        />{" "}
+        />
       </label>
 
       <label htmlFor=''>
-        break{" "}
+        break
         <input
           type='number'
           value={tempValue2}
@@ -43,6 +43,10 @@ const InputsWrapper = styled.div`
   align-items: center;
   label {
     min-width: 50%;
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
   }
   .input {
     background-color: var(--color-primary-200);

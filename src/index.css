@@ -155,6 +155,12 @@ li.selected {
   right: 0;
   font-size: clamp(20px, 2.5vw, 30px) !important;
 }
+.apply-btn {
+  position: absolute;
+  bottom: 0;
+  right: 40%;
+  font-size: clamp(20px, 2.5vw, 30px) !important;
+}
 
 .CircularProgressbar {
   /*
